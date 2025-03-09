@@ -1,8 +1,8 @@
 {
-  "name": "Dodge",
+  "name": "MoveTrack",
   "version": "1.0",
   "authors": ["IRK Lab Assistant"],
-  "description": "Bot yang gerakkannya tidak bisa ditebak, menembak ke segala arah",
+  "description": "Bot yang mengejar musuh dan menembaknya",
   "homepage": "",
   "countryCodes": ["id"],
   "platform": ".Net 8.0",

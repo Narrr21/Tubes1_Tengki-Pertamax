@@ -27,16 +27,14 @@ public class Dodge : Bot
 
         while (IsRunning)
         {
-            SetForward(200);
-            SetTurnRight(45);
+            SetForward(40000);
+            SetTurnRight(60);
             WaitFor(new TurnCompleteCondition(this));
 
-            SetTurnLeft(90);
-            SetForward(150);
+            SetTurnRight(90);
             WaitFor(new TurnCompleteCondition(this));
 
             SetTurnRight(60 + (random.NextDouble() * 30)); 
-            SetForward(100);
             WaitFor(new TurnCompleteCondition(this));
         }
     }
@@ -46,17 +44,6 @@ public class Dodge : Bot
         double dx = e.X - X;
         double dy = e.Y - Y;
         double distance = Math.Sqrt(dx * dx + dy * dy);
-
-        if (distance > 200)
-        {
-            SetTurnRight(45);
-            SetForward(150);
-        }
-        else if (distance < 100)
-        {
-            SetTurnRight(90);
-            SetBack(100);
-        }
 
         double firePower = distance > 100 ? 1 : 3;
         Fire(firePower);
