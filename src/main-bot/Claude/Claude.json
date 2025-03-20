@@ -1,0 +1,9 @@
+{
+  "name": "Claude",
+  "version": "1.0",
+  "description": "A bot that drives forward and backward, and fires a bullet",
+  "homepage": "",
+  "countryCodes": ["id"],
+  "platform": ".Net 8.0",
+  "programmingLang": "C# 10.0"
+}
