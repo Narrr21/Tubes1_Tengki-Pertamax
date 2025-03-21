@@ -31,7 +31,7 @@ public class Dodge : Bot
             SetTurnRight(60);
             WaitFor(new TurnCompleteCondition(this));
 
-            SetTurnRight(90);
+            SetTurnLeft(90 + (random.NextDouble() * 30));
             WaitFor(new TurnCompleteCondition(this));
 
             SetTurnRight(60 + (random.NextDouble() * 30)); 
