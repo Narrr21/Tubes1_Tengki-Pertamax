@@ -1,8 +1,8 @@
 {
   "name": "MoveTrack",
   "version": "1.0",
-  "authors": ["IRK Lab Assistant"],
-  "description": "Bot yang mengejar musuh dan menembaknya",
+  "authors": ["Narrr21"],
+  "description": "Bot yang mengejar musuh dan menembaknya dari jarak dekat",
   "homepage": "",
   "countryCodes": ["id"],
   "platform": ".Net 8.0",

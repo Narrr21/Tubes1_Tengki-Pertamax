@@ -1,7 +1,8 @@
 {
   "name": "Claude",
   "version": "1.0",
-  "description": "A bot that drives forward and backward, and fires a bullet",
+  "authors": ["Narrr21"],
+  "description": "Bot gila yang melompat ke tengah dan menembak semua bot di sekitarnya.",
   "homepage": "",
   "countryCodes": ["id"],
   "platform": ".Net 8.0",

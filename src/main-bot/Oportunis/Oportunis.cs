@@ -8,12 +8,13 @@ public class Oportunis : Bot
 {
     private bool lowEnergy = false;
     private bool chasing = false;
-    private bool kamikaze = false;
 
     Random random = new Random();
 
     double TargetX;
     double TargetY;
+
+    double TargetId;
 
     private Dictionary<int, ScannedBotEvent> enemyStates = new Dictionary<int, ScannedBotEvent>();
 
@@ -36,7 +37,6 @@ public class Oportunis : Bot
             lowEnergy = Energy < 40;
             if (lowEnergy)
             {
-                kamikaze = Energy < 20 && chasing;
                 Escape();
             }
             else
@@ -51,29 +51,27 @@ public class Oportunis : Bot
 
     private void Escape()
     {
-        TargetSpeed = 6;
-        Console.WriteLine("I am escaping");
+        TargetSpeed = 8;
+        Console.WriteLine("Not Today, Buddy Boy !");
         var (safeX, safeY) = Safe();
-        Console.WriteLine($"Run to {safeX} {safeY}");
+        Console.WriteLine($"I am safe here {safeX} {safeY}");
         GoTo(safeX, safeY);
+        Dodge();
     }
 
     private void Chase() {
-        Console.WriteLine($"I am chasing {TargetX} {TargetY}");
+        Console.WriteLine($"Thou shall die {TargetId}");
         TurnBodyToTarget(TargetX, TargetY);
         TargetSpeed = 5;
     }
 
     private void Dodge() {
-        Console.WriteLine("I am dodging");
-        TargetSpeed = 5;
-        SetTurnRight(60);
-        WaitFor(new TurnCompleteCondition(this));
-
+        Console.WriteLine("Ha!, I Raised My Dex Stat to lvl 9999");
+        TargetSpeed = 8;
         SetTurnRight(90 + (random.NextDouble() * 30));
         WaitFor(new TurnCompleteCondition(this));
 
-        SetTurnRight(60 + (random.NextDouble() * 30)); 
+        SetTurnRight(90 + (random.NextDouble() * 30)); 
         WaitFor(new TurnCompleteCondition(this));
     }
 
@@ -107,23 +105,51 @@ public class Oportunis : Bot
 
     public override void OnScannedBot(ScannedBotEvent e)
     {
-        Console.WriteLine($"Scanned bot {e.ScannedBotId} in {e.X} {e.Y}");
+        Console.WriteLine($"Found Them! {e.ScannedBotId} at {e.X}, {e.Y}");
+
         enemyStates[e.ScannedBotId] = e;
+        double BearingRadar = NormalizeRelativeAngle(DirectionTo(e.X, e.Y) - RadarDirection);
         if (lowEnergy) {
-            kamikaze = e.Energy < 20;
-            banzai();
+            TurnGunToTarget(e.X, e.Y);
+            Fire(1);
+            if (BearingRadar < 3) {
+                firePower(distance(e.X, e.Y));
+                Rescan();
+            }
         } else {
-            chasing = e.Energy < 20;
             if (chasing) {
+                if (TargetId == e.ScannedBotId) {
+                    chasing = true;
+                } else {
+                    return;
+                }
+            } else {
+                chasing = e.Energy < 40;
                 TargetX = e.X;
                 TargetY = e.Y;
+                TargetId = e.ScannedBotId;
+            }
+            
+            if (BearingRadar < 3) {
+                Rescan();
             }
             TurnGunToTarget(e.X, e.Y);
             if (e.Speed < 3) {
                 firePower(distance(e.X, e.Y));
             } else {
-                Fire(0.1);
+                Fire(1);
             }
+        }
+    }
+
+    public override void OnBotDeath(BotDeathEvent e)
+    {
+        Console.WriteLine($"Bot {e.VictimId} has been returned to the void");
+
+        enemyStates.Remove(e.VictimId);
+        if (e.VictimId == TargetId) {
+            chasing = false;
+            Console.WriteLine("Gotcha! gotta kill them all");
         }
     }
 
@@ -131,10 +157,6 @@ public class Oportunis : Bot
     {
         double power = Math.Max(1, Math.Min(3, 500 / dist));
         Fire(power);
-    }
-
-    public void banzai() {
-
     }
 
     public double distance(double toX, double toY) {
@@ -146,12 +168,15 @@ public class Oportunis : Bot
 
     public override void OnHitBot(HitBotEvent e)
     {
-        Console.WriteLine($"Ouch! I hit a bot at {e.X}, {e.Y}");
+        TurnGunToTarget(e.X, e.Y);
+        Fire(3);
+        Console.WriteLine($"Get out of my way {e.VictimId}");
     }
 
     public override void OnHitWall(HitWallEvent e)
     {
-        Console.WriteLine("Ouch! I hit a wall, must turn back!");
+        TargetSpeed *= -1;
+        Console.WriteLine("Breaking wall ? are we titan now ?");
     }
 
     private void GoTo(double x, double y)
@@ -160,7 +185,7 @@ public class Oportunis : Bot
         double dy = y - Y;
         double angle = Math.Atan2(dy, dx) * (180.0 / Math.PI);
         SetTurnLeft(NormalizeBearing(angle - Direction));
-        SetForward(100);
+        SetForward(distance(x, y));
     }
 
     private double NormalizeBearing(double angle)
@@ -173,9 +198,9 @@ public class Oportunis : Bot
     public void TurnGunToTarget(double x, double y) {
         var bearing = NormalizeRelativeAngle(DirectionTo(x, y) - GunDirection);
         TurnGunLeft(bearing);
-        Console.WriteLine($"My Gun to {GunDirection} My Radar to {RadarDirection}");
+        // Console.WriteLine($"My Gun to {GunDirection} My Radar to {RadarDirection}");
         AlignRadar();
-        Console.WriteLine($"My Gun to {GunDirection} My Radar to {RadarDirection}");
+        // Console.WriteLine($"My Gun to {GunDirection} My Radar to {RadarDirection}");
     }
 
     public void AlignRadar()
@@ -184,7 +209,7 @@ public class Oportunis : Bot
         while (radarTurn > 180) radarTurn -= 360;
         while (radarTurn < -180) radarTurn += 360;
         TurnRadarLeft(radarTurn);
-        Console.WriteLine($"Align Radar to {RadarDirection}");
+        // Console.WriteLine($"Align Radar to {RadarDirection}");
     }
 
     public void TurnBodyToTarget(double x, double y) {
