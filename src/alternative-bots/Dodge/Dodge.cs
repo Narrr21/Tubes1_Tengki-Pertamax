@@ -1,3 +1,10 @@
+/*
+* Dodge adalah bot yang mengutamakan survivability yang berfokus pada pergerakan. Dodge melakukan pergerakan yang sulit 
+* diprediksi dengan cara bergerak maju mundur secara acak. Dodge akan menembak musuh ketika musuh terdeteksi.
+ */
+
+
+
 using System;
 using System.Drawing;
 using Robocode.TankRoyale.BotApi;

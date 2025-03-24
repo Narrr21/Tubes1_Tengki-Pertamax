@@ -1,3 +1,10 @@
+/*
+ * PersonalBot adalah Bot yang menggunakan strategi fokus pada menyerang. PersonalBot akan menyimpan ID Bot yang terdeteksi pertama kali.
+ * Bot tersebut menjadi target dan akan diincar terus sampai bot tersebut hancur. 
+*/
+
+
+
 using System;
 using System.Drawing;
 using Microsoft.VisualBasic;
@@ -8,8 +15,8 @@ public class PersonalBot : Bot
 {   
     int targetBotId = -1;
     bool movingForward;
-    long lastScannedTick = 0;
-    long currentTick = 0;
+    long lastScannedTick = 0; //Tick digunakan untuk menghitungg waktu terakhir bot terdeteksi
+    long currentTick = 0; //Tick digunakan untuk menghitung waktu sekarang
 
     static void Main(string[] args)
     {
@@ -37,7 +44,7 @@ public class PersonalBot : Bot
             SetTurnLeft(60);
             WaitFor(new TurnCompleteCondition(this));
 
-            if(targetBotId != -1 && currentTick - lastScannedTick > 3) {
+            if(targetBotId != -1 && currentTick - lastScannedTick > 3) { //Jika bot tidak terdeteksi dalam 3 tick, maka bot akan mencari target baru
                 Console.WriteLine("Lost target: " + targetBotId);
                 targetBotId = -1;
             }
@@ -46,40 +53,20 @@ public class PersonalBot : Bot
 
     public override void OnScannedBot(ScannedBotEvent e)
     {   
-        // if (targetBotId == -1) {
-        //     TurnToFaceTarget(e.X, e.Y); 
-        //      var bearingFromGun = GunBearingTo(e.X, e.Y);
-
-        //     TurnGunLeft(bearingFromGun);
-
-        //     if (Math.Abs(bearingFromGun) <= 2)
-        //         Fire(2);
-        //     if (bearingFromGun == 0)
-        //         Rescan();
-        // } else if (e.ScannedBotId == targetBotId) {
-        //     TurnToFaceTarget(e.X, e.Y); 
-        //     var bearingFromGun = GunBearingTo(e.X, e.Y);
-
-        //     TurnGunLeft(bearingFromGun);
-        //     if (Math.Abs(bearingFromGun) <= 2)
-        //         Fire(2);
-        //     if (bearingFromGun == 0)
-        //         Rescan();
-        // }
 
         if (targetBotId == -1) {
             targetBotId = e.ScannedBotId;
-            Console.WriteLine("Locked on target: " + targetBotId);
+            Console.WriteLine("Locked on target: " + targetBotId); //Jika belum ada target, maka bot akan menyimpan ID bot yang terdeteksi pertama kali
         }
 
         if (e.ScannedBotId == targetBotId) {
             lastScannedTick = currentTick;
-            Console.WriteLine("Scanned Tick: " + lastScannedTick + "\n");
+            Console.WriteLine("Scanned Tick: " + lastScannedTick + "\n"); //Menyimpan waktu terakhir bot terdeteksi
             TurnToFaceTarget(e.X, e.Y);
         
             var distance = DistanceTo(e.X, e.Y);
 
-            if (distance > 100) {
+            if (distance > 100) { //Menjaga jarak dengan bot target
             SetForward(50);
             } else {
             SetBack(30); 
@@ -92,10 +79,7 @@ public class PersonalBot : Bot
         if (bearingFromGun == 0) Rescan();
     }
 
-        // var enemyDistance = DistanceTo(e.X, e.Y);
-        // if (enemyDistance <= 100) {
-        //     ReverseDirection();
-        // }
+    
     }
 
     // public override void OnBulletHit(BulletHitBotEvent e)

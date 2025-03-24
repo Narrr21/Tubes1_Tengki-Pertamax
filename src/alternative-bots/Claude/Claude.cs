@@ -1,3 +1,9 @@
+/* 
+*    Bot ini menggunakan strategi greedy sederhana yang mengutamakan survivability. Bot akan pergi ke tengah arena ketika ronde dimulai
+*    dan melakukan perputaran. Bot akan menembak langsung ketika ada bot yang terdeteksi.
+*/
+
+
 using System;
 using System.Drawing;
 using Robocode.TankRoyale.BotApi;
@@ -29,7 +35,7 @@ public class Claude : Bot
         GoToCenter();
         while (IsRunning)
         {
-            TargetSpeed = 6;
+            TargetSpeed = 3;
             TurnRate = 20;
             TurnGunLeft(double.PositiveInfinity);
             WaitFor(new TurnCompleteCondition(this));
@@ -41,7 +47,7 @@ public class Claude : Bot
         Fire(1);
     }
 
-    private void GoToCenter()
+    private void GoToCenter()  
     {
         Console.WriteLine("Going to center");
         double centerX = ArenaWidth / 2;
