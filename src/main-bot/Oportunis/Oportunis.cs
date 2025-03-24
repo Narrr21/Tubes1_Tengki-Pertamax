@@ -1,3 +1,8 @@
+/*
+ * Oportunis adalah Bot yang menggunakan strategi fokus pada energi management dan adaptasi pada segala situasi.
+ * Bot ini akan berusaha untuk selalu berada pada posisi aman jika energi rendah dan menyerang musuh yang memiliki energi rendah.
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
