@@ -206,9 +206,7 @@ public class Oportunis : Bot
     public void AlignRadar()
     {
         double radarTurn = GunDirection - RadarDirection;
-        while (radarTurn > 180) radarTurn -= 360;
-        while (radarTurn < -180) radarTurn += 360;
-        TurnRadarLeft(radarTurn);
+        TurnRadarLeft(NormalizeBearing(radarTurn));
         // Console.WriteLine($"Align Radar to {RadarDirection}");
     }
 
